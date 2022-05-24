@@ -1,5 +1,42 @@
 {% extends 'store/base.html' %}
 
 {% block main_area %}
-    <h1>Store Page</h1>
+    {% if user.is_authenticated %}
+        {% if user.is_superuser or user.is_staff %}
+            <a class="btn btn-info btn-sm float-right" href="/store/create_post/" role="button">
+                <i class="fas fa-pen"></i>&nbsp;&nbsp;New Store</a>
+        {% endif %}
+    {% endif %}
+
+    <h1>Store
+    <!--
+        {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
+        {% if category %} <span class="badge bg-secondary">{{ category }}</span>{% endif %}
+        {% if tag %} <i class="fas fa-tags"></i> <span class="badge rounded-pill bg-primary">{{ tag }}</span>{% endif %}
+    -->
+    </h1>
+    {% if store_list %}
+        {% for s in store_list %}
+        <!-- Blog Post -->
+        <div class="card mb-4" id="store-{{ s.pk }}">
+            {% if s.head_image %}
+                <img class="card-img-top" src="{{ s.head_image.url }}" alt="{{ s }} head image">
+            {% else %}
+                <img class="card-img-top" src="https://picsum.photos/seed/{{ s.id }}/800/200" alt="random_image">
+            {% endif %}
+            <div class="card-body">
+                <br/>
+                <h2 class="card-title">{{ s.title }}</h2>
+                    <p class="card-text">{{ s.content | truncatewords:45 }}</p>
+                <a href="{{ s.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>
+            </div>
+            <div class="card-footer text-muted">
+                Posted on {{ s.created_at }} by
+                <a href="#">{{ s.author | upper }}</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <h3>아직 게시물이 없습니다.</h3>
+    {% endif %}
 {% endblock %}
