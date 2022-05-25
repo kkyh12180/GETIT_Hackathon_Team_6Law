@@ -75,7 +75,7 @@ def new_Review(request, pk) :
             review_form = ReviewForm(request.POST)
             if review_form.is_valid() :
                 review = review_form.save(commit=False)
-                review.store = store
+                review.post = store
                 review.author = request.user
                 review.save()
                 return redirect(review.get_absolute_url())

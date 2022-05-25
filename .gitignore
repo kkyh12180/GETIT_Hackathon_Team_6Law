@@ -33,6 +33,15 @@ MANIFEST
 *.manifest
 *.spec
 
+# Environments
+.env
+.djangovenv
+env/
+djangovenv/
+ENV/
+env.bak/
+venv.bak/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

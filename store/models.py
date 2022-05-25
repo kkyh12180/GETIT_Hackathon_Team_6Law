@@ -13,7 +13,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Store(models.Model) : 
     title = models.CharField(max_length=30)
-    address = models.TextField() 
+    address = models.TextField(blank=False) 
     content = models.TextField()
     table = models.IntegerField()
     # Save Image
@@ -31,7 +31,7 @@ class Review(models.Model) :
     post = models.ForeignKey(Store, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    Rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(10.0)])
+    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(10.0)])
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -39,7 +39,7 @@ class Review(models.Model) :
         return f'{self.author}::{self.content}'
 
     def get_absolute_url(self):
-        return f'{self.post.get_absolute_url()}#comment-{self.pk}'
+        return f'{self.post.get_absolute_url()}#review-{self.pk}'
     
     '''
     def get_avatar_url(self) :

@@ -1,9 +1,9 @@
-{% extends 'store/base.html' %}
+{% extends 'store/base_full_width.html' %}
 
 {% block main_area %}
     {% if user.is_authenticated %}
         {% if user.is_superuser or user.is_staff %}
-            <a class="btn btn-info btn-sm float-right" href="/store/create_post/" role="button">
+            <a class="btn btn-info btn-sm float-end" href="/store/create_post/" role="button">
                 <i class="fas fa-pen"></i>&nbsp;&nbsp;New Store</a>
         {% endif %}
     {% endif %}
@@ -18,17 +18,19 @@
     {% if store_list %}
         {% for s in store_list %}
         <!-- Blog Post -->
-        <div class="card mb-4" id="store-{{ s.pk }}">
-            {% if s.head_image %}
-                <img class="card-img-top" src="{{ s.head_image.url }}" alt="{{ s }} head image">
-            {% else %}
-                <img class="card-img-top" src="https://picsum.photos/seed/{{ s.id }}/800/200" alt="random_image">
-            {% endif %}
+        <div class="card text-center" id="store-{{ s.pk }}">
+            <div class="card-header">
+                {% if s.head_image %}
+                    <img class="card-img-top" src="{{ s.head_image.url }}" alt="{{ s }} head image" style="width:auto; height:200px;">
+                {% else %}
+                    <img class="card-img-top" src="https://picsum.photos/seed/{{ s.id }}/800/200" alt="random_image">
+                {% endif %}
+            </div>
             <div class="card-body">
-                <br/>
                 <h2 class="card-title">{{ s.title }}</h2>
                     <p class="card-text">{{ s.content | truncatewords:45 }}</p>
-                <a href="{{ s.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>
+                <a href="{{ s.get_absolute_url }}" class="btn btn-primary">자세히 알아보기 &rarr;</a>
+                <br/>
             </div>
             <div class="card-footer text-muted">
                 Posted on {{ s.created_at }} by
