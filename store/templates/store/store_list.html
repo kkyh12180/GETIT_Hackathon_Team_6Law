@@ -28,7 +28,7 @@
             </div>
             <div class="card-body">
                 <h2 class="card-title">{{ s.title }}</h2>
-                    <p class="card-text">{{ s.content | truncatewords:45 }}</p>
+                    <p class="card-text">{{ s.content | truncatewords:20 }}</p>
                 <a href="{{ s.get_absolute_url }}" class="btn btn-primary">자세히 알아보기 &rarr;</a>
                 <br/>
             </div>
