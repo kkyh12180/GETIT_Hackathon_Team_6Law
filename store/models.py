@@ -30,6 +30,7 @@ class Store(models.Model) :
 class Check_table(models.Model) :
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     table_num = models.IntegerField(default=100)
+    '''
     table_check_001 = models.BooleanField(default=False, blank=True, null=False)
     table_check_002 = models.BooleanField(default=False, blank=True, null=False)
     table_check_003 = models.BooleanField(default=False, blank=True, null=False)
@@ -130,6 +131,8 @@ class Check_table(models.Model) :
     table_check_098 = models.BooleanField(default=False, blank=True, null=False)
     table_check_099 = models.BooleanField(default=False, blank=True, null=False)
     table_check_100 = models.BooleanField(default=False, blank=True, null=False)
+    '''
+    table_check = [models.BooleanField(default=False, blank=True, null=False) for x in range(100)]
 
 
 class Review(models.Model) :

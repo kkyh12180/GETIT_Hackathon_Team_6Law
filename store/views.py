@@ -112,3 +112,7 @@ def new_Review(request, pk) :
             return redirect(store.get_absolute_url())
     else :
         raise PermissionDenied
+
+def change_table_status(request, pk) :
+    if request.user.is_authenticated :
+        store = get_object_or_404(Store, pk=pk)
