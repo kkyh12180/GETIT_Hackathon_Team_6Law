@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import get_object_or_404
-from .models import Store
+from .models import Store, Review
 from .forms import ReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
@@ -27,8 +27,28 @@ class StoreDetail(DetailView) :
     model = Store
 
     def get_context_data(self, **kwargs) :
+        # Comment form
         context = super(StoreDetail, self).get_context_data()
         context['comment_form'] = ReviewForm
+
+        # Review
+        reviews = Review.objects.filter(post=self.kwargs['pk'])
+        sum_rate = 0
+        cnt = 0
+        for review in reviews :
+            sum_rate += float(review.rating)
+            cnt = cnt + 1
+        aver_rating = sum_rate / cnt
+        context['average_rating'] = aver_rating
+
+        # Check seat
+        # Get seats
+        seats = Store.objects.filter(pk=self.kwargs['pk'])
+        table = 0
+        for seat in seats :
+            table = seat.table
+        context['table'] = table
+
         return context
 
 class StoreCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView) :
