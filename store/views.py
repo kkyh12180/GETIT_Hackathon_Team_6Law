@@ -6,6 +6,7 @@ from .models import Store, Review
 from .forms import ReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 
 # Create your views here.
 '''
@@ -115,6 +116,17 @@ def new_Review(request, pk) :
     else :
         raise PermissionDenied
 
-def change_table_status(request, pk) :
-    if request.user.is_authenticated :
-        store = get_object_or_404(Store, pk=pk)
+class StoreSearch(StoreList) :
+    paginate_by : None
+
+    def get_queryset(self) :
+        q = self.kwargs['q']
+        store_list = Store.objects.filter (Q(title__contains = q)).distinct()
+        return store_list
+    
+    def get_context_data(self, **kwargs):
+        context = super(StoreSearch, self).get_context_data()
+        q = self.kwargs['q']
+        context['search_info'] = f' 검색 결과 : {q} ({self.get_queryset().count()})'
+
+        return context
