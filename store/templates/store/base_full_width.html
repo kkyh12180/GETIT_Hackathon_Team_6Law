@@ -7,6 +7,21 @@
     <link rel="stylesheet" href="{% static 'store/bootstrap/bootstrap.min.css' %}" media="screen">
 
     <script src="https://kit.fontawesome.com/fca3077327.js" crossorigin="anonymous"></script>
+    <script>
+        function change_button(clicked_id) {
+            const btn = document.getElementById(clicked_id)
+            var id_num = clicked_id.substring(clicked_id.length - 2, clicked_id.length)
+            if (clicked_id.include("red")) {
+                btn.className = "btn btn-default btn-outline-primary"
+                btn.id = "blue-" + id_num
+                btn.textContent = "빈 자리"
+            } else {
+                btn.className = "btn btn-default btn-outline-danger"
+                btn.id = "red-" + id_num
+                btn.textContent = "사용 중"
+            }
+        }
+    </script>
 </head>
 
 <body>

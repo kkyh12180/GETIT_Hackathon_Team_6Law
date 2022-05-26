@@ -1,7 +1,8 @@
+import random
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import get_object_or_404
-from .models import Store, Review, Check_table
+from .models import Store, Review
 from .forms import ReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
@@ -49,7 +50,10 @@ class StoreDetail(DetailView) :
         table = 0
         for seat in seats :
             table = seat.table
+        random_nums = random.sample(range(table), int(table / 3))
         table_list = [[i, False] for i in range(table)]
+        for num in random_nums :
+            table_list[num][1] = True
         context['table_list'] = table_list
 
         return context
@@ -68,10 +72,6 @@ class StoreCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView) :
             form.instance.author = current_user
             response = super(StoreCreate, self).form_valid(form)
 
-            created_store = Store.objects.get(title=form.instance.title)
-            check_table = Check_table.objects.create(store=created_store, table_num=form.instance.table)
-            check_table.save()
-            
             return response
         else :
             return redirect('/store/')
