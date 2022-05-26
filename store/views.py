@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import get_object_or_404
-from .models import Store, Review
+from .models import Store, Review, Check_table
 from .forms import ReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
@@ -38,7 +38,9 @@ class StoreDetail(DetailView) :
         for review in reviews :
             sum_rate += float(review.rating)
             cnt = cnt + 1
-        aver_rating = sum_rate / cnt
+        aver_rating = 0
+        if cnt != 0 :
+            aver_rating = sum_rate / cnt
         context['average_rating'] = aver_rating
 
         # Check seat
@@ -55,6 +57,7 @@ class StoreDetail(DetailView) :
 class StoreCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView) :
     model = Store
     fields = ['title', 'address', 'content', 'table', 'head_image']
+    template_name = 'store/store_create.html'
 
     def test_func(self) :
         return self.request.user.is_superuser or self.request.user.is_staff
@@ -64,6 +67,11 @@ class StoreCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView) :
         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser) :
             form.instance.author = current_user
             response = super(StoreCreate, self).form_valid(form)
+
+            created_store = Store.objects.get(title=form.instance.title)
+            check_table = Check_table.objects.create(store=created_store, table_num=form.instance.table)
+            check_table.save()
+            
             return response
         else :
             return redirect('/store/')
