@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'mypage',
     'guide',
     'ask',
+    'main',
+    'account_page',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
