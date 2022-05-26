@@ -54,6 +54,8 @@ class StoreDetail(DetailView) :
         table_list = [[i, False] for i in range(table)]
         for num in random_nums :
             table_list[num][1] = True
+        context['using_table'] = int(table / 3)
+        context['table_num'] = table
         context['table_list'] = table_list
 
         return context
