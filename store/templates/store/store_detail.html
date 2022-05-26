@@ -1,5 +1,6 @@
 {% extends 'store/base_full_width.html' %}
 {% load crispy_forms_tags %}
+{% load mathfilters %}
 
 {% block head_title %}
     {{ store.title }} - Store
@@ -14,11 +15,13 @@
             by <a href="#">{{ store.author | upper }}</a>
         </p>
         <hr>
+
         {% if user.is_authenticated and user == store.author %}
             <a class="btn btn-info btn-sm float-right" role="button" href="/store/update_store/{{store.pk}}/">
                 <i class="fas fa-pen"></i> Edit Store
             </a>
         {% endif %}
+
         <hr>
 
         <!-- Preview Image -->
@@ -27,17 +30,43 @@
         {% else %}
             <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
         {% endif %}
+
         <hr>
 
         <!-- Store address -->
         <p>{{ store.address }}</p>
 
         <hr>
+
         <!-- Post Content -->
         <p>{{ store.content }}</p>
 
         <hr>
-        <p>{{ table }}</p>
+        <br/>
+        <div class="container">
+            <div class="btn-group mx-auto" role="group">
+                {% for table in table_list %}
+                    {% if table.1 %}
+                        <button type="button" class="btn btn-default btn-outline-danger" style="width:135px;">{{ table.0|add:1 }} : 사용 중</button>
+                        {% if table.0|add:1|mod:9 %}
+                        {% else %}
+                            </div>
+                            <br/>
+                            <div class="btn-group" role="group">
+                        {% endif %}
+                    {% else %}
+                        <button type="button" class="btn btn-default btn-outline-primary" style="width:135px;">{{ table.0|add:1 }} : 빈 자리</button>
+                        {% if table.0|add:1|mod:9 %}
+                        {% else %}
+                            </div>
+                            <br/>
+                            <div class="btn-group" role="group">
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
         <hr>
         <p>평균 평점 : {{ average_rating }}</p>
         <hr>

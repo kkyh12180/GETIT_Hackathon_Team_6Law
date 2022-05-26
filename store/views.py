@@ -47,7 +47,8 @@ class StoreDetail(DetailView) :
         table = 0
         for seat in seats :
             table = seat.table
-        context['table'] = table
+        table_list = [[i, False] for i in range(table)]
+        context['table_list'] = table_list
 
         return context
 
