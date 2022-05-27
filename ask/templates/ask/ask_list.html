@@ -3,7 +3,7 @@
 {% block main_area %}
     {%if user.is_authenticated %}
         {% if user.is_superuser or user.is_staff%}
-            <a class="btn btn-outline-dark btn-sm float-right" href="/ask/create_post/"
+            <a class="btn btn-outline-dark btn-sm float-end" href="/ask/create_post/"
             role="button"><i class="fas fa-pen"></i>&nbsp;&nbsp;Upload Question</a>
          {% endif %}
     {% endif %}    
