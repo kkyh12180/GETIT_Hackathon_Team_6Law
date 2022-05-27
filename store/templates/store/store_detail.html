@@ -17,7 +17,7 @@
         <hr>
 
         {% if user.is_authenticated and user == store.author %}
-            <a class="btn btn-info btn-sm float-right" role="button" href="/store/update_store/{{store.pk}}/">
+            <a class="btn btn-outline-dark btn-sm float-right" role="button" href="/store/update_store/{{store.pk}}/">
                 <i class="fas fa-pen"></i> Edit Store
             </a>
         {% endif %}
