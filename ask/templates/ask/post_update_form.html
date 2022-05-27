@@ -7,8 +7,9 @@
    <hr>
    <form method = "post" enctype="multipart/form-data">{%csrf_token%}
        <table>
-           {{form}}
+           {{form | crispy}}
+           <br/>
        </table>
-       <button type="submit" class="btn btn-primary float-right">Submit</button>
+       <button type="submit" class="btn btn-outline-dark float-right">Submit</button>
    </form>
  {% endblock %}

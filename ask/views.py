@@ -1,8 +1,8 @@
 
-from ensurepip import bootstrap
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from .models import Post, Category
+from .models import Post, Category, Answer
+from .forms import AnswerForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 
@@ -20,12 +20,12 @@ class PostList(ListView) :
 
 class PostDetail(DetailView) :
     model = Post
+    template_name = 'ask/ask_detail.html'
 
     def get_context_data(self, **kwargs) :
         context = super(PostDetail, self).get_context_data()
+        context['comment_form'] = AnswerForm
         return context
-
-
 
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
@@ -72,3 +72,20 @@ def category_page(request, slug):
             'category': category,
         }
     )    
+
+def new_answer(request, pk) :
+    if request.user.is_authenticated :
+        post = get_object_or_404(Post, pk=pk)
+
+        if request.method == 'POST' :
+            answer_form = AnswerForm(request.POST)
+            if answer_form.is_valid() :
+                answer = answer_form.save(commit=False)
+                answer.post = post
+                answer.author = request.user
+                answer.save()
+                return redirect(answer.get_absolute_url())
+        else :
+            return redirect(post.get_absolute_url())
+    else :
+        raise PermissionDenied

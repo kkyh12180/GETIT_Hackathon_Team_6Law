@@ -1,4 +1,5 @@
-{% extends 'ask/base.html' %} 
+{% extends 'ask/base_full_width.html' %} 
+{% load crispy_forms_tags %}
 
 {% block head_title %}
     {{ post.title }} - ASK
@@ -19,35 +20,19 @@
         <hr>
 
         {% if user.is_authenticated and user == post.author %}
-        <a class="btn btn-info btn-sm float-right" href="/ask/update_post/{{post.pk}}/"
-        role="button"><i class="fas fa-pen"></i>    Edit Post</a>
+        <a class="btn btn-outline-dark btn-sm float-right" href="/ask/update_post/{{post.pk}}/" role="button"><i class="fas fa-pen"></i>&nbsp;&nbsp;Edit question</a>
         {% endif %}
-
-        <!-- Date/Time -->
-        <p>{{ post.created_at }}</p>
-
         <hr>
 
-        <!-- Preview Image -->
-        {%if post.head_image %}
-        <img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }} head_image" >
-        {% else %}
-        <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
-        {% endif %}
+        <!-- Date/Time -->
+        <p>업로드 시간 : {{ post.created_at }}</p>
+
         <hr>
 
         <!-- Post Content -->
+        <h5>질문 내용</h5>
+        <br/>
         <p>{{ post.content }}</p>
-        {% if post.tags.exists %}
-        <i class = "fas fa-tags"></i>
-            {% for tag in post.tags.all %}
-                <a href="{{ tag.get_absoulte_url}}" class="badge rounded-pill bg-primary">
-                    {{ tag }}
-                </a>
-            {% endfor %}
-            <br><br>
-        {% endif %}    
-
 
         {% if post.file_upload %}
         <a href="{{ post.file_upload.url }}" class="btn btn-light" role="button" download>Downlaoad</a>
@@ -71,57 +56,40 @@
     <div id="comment-area">
         <!-- Comments Form -->
         <div class="card my-4">
-            <h5 class="card-header">Leave a Comment:</h5>
+            <h5 class="card-header">Leave a Answer :</h5>
             <div class="card-body">
-                <form>
-                    <div class="form-group">
-                        <textarea class="form-control" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </div>   
-        <!-- Single Comment -->
-        <div class="media mb-4">
-            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-            <div class="media-body">
-                <h5 class="mt-0">Commenter Name</h5>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                vulputate fringilla. Donec lacinia congue felis in faucibus.
+                {% if user.is_authenticated %}
+                    <form id="comment-form" method="POST" action="{{ ask.get_absolute_url }}new_answer/">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ comment_form | crispy }}
+                        </div>
+                        <br/>
+                        <button type="submit" class="btn btn-outline-dark">Submit</button>
+                    </form>
+                {% else %}
+                    <a role="button" class="btn btn-outline-dark btn-block btn-sm" href="#" data-toggle="modal" data-target="%LoginModal">Log in and leave a answer</a>
+                {% endif %}
             </div>
         </div>
+        <hr>
 
-        <!-- Comment with nested comments -->
-        <div class="media mb-4">
-            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-            <div class="media-body">
-                <h5 class="mt-0">Commenter Name</h5>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                vulputate fringilla. Donec lacinia congue felis in faucibus.
-
-                <div class="media mt-4">
-                    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+        {% if post.answer_set.exists %}
+            {% for answer in post.answer_set.iterator %}
+                <!-- Single Comment -->
+                <div class="media mb-4" id="answer-{{ answer.pk }}">
                     <div class="media-body">
-                        <h5 class="mt-0">Commenter Name</h5>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
-                        sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce
-                        condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                        <h5 class="mt-0">{{ answer.author.nickname }} &nbsp;
+                            <small class="text-muted">{{ answer.created_at }}</small>
+                        </h5>
+                        <p>{{ answer.content | linebreaks }}</p>
+                        {% if answer.created_at != answer.modified_at %}
+                            <p class="text-muted float-right"><small>Updated: {{ answer.modified_at }}</small></p>
+                        {% endif %}
                     </div>
                 </div>
-
-                <div class="media mt-4">
-                    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                    <div class="media-body">
-                        <h5 class="mt-0">Commenter Name</h5>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
-                        sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce
-                        condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>    
+                <hr>
+            {% endfor %}
+        {% endif %}
+    </div>
  {% endblock %}

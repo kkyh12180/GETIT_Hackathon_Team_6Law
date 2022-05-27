@@ -1,14 +1,15 @@
 {% extends 'ask/base_full_width.html' %} 
-
+{% load crispy_forms_tags %}
 {% block head_title %}Create Post - ASK{% endblock %}
  
 {% block main_area %}
-   <h1>Create New Post</h1>
+   <h1>Create New Question</h1>
    <hr>
-   <form method = "post" enctype="multipart/form-data">{%csrf_token%}
+   <form method="post" enctype="multipart/form-data">{%csrf_token%}
        <table>
-           {{form}}
+           {{form | crispy }}
        </table>
-       <button type="submit" class="btn btn-primary float-right">Submit</button>
+       <br/>
+       <button type="submit" class="btn btn-outline-dark float-right">Submit</button>
    </form>
  {% endblock %}
