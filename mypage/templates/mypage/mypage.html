@@ -1,5 +1,18 @@
-{% extends 'mypage/base.html' %}
+{% extends 'mypage/base_full_width.html' %}
 
 {% block main_area %}
     <h1>Mypage</h1>
+    <hr>
+    <p>이메일 : {{user.email}}</p>
+    <hr>
+    <p>닉네임 : {{user.nickname}}</p>
+    <hr>
+    <p>생년월일 : {{user.date_of_birth}}</p>
+    <hr>
+    {% if user.is_seller %}
+        <p>점주용 계정입니다!</p>
+    {% else %}
+        <p>고객용 계정입니다!</p>
+    {% endif %}
+    <hr>
 {% endblock %}
