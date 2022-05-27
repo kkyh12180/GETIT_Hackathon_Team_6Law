@@ -42,12 +42,13 @@
         <p>{{ store.content }}</p>
 
         <hr>
-        <br/>
         <div class="container">
+            <p>테이블 수 : {{ table_num }}</p>
+            <p>사용 중인 테이블 : {{ using_table }} / {{ table_num }}</p>
             <div class="btn-group mx-auto" role="group">
                 {% for table in table_list %}
                     {% if table.1 %}
-                        <button type="button" class="btn btn-default btn-outline-danger" style="width:135px;">{{ table.0|add:1 }} : 사용 중</button>
+                        <button type="button" id="red-{{ table.0 }}" onclick="change_button(this.id)" class="btn btn-default btn-outline-danger" style="width:135px;">사용 중</button>
                         {% if table.0|add:1|mod:9 %}
                         {% else %}
                             </div>
@@ -55,7 +56,7 @@
                             <div class="btn-group" role="group">
                         {% endif %}
                     {% else %}
-                        <button type="button" class="btn btn-default btn-outline-primary" style="width:135px;">{{ table.0|add:1 }} : 빈 자리</button>
+                        <button type="button" id="blue-{{ table.0 }}" onclick="change_button(this.id)" class="btn btn-default btn-outline-primary" style="width:135px;">빈 자리</button>
                         {% if table.0|add:1|mod:9 %}
                         {% else %}
                             </div>

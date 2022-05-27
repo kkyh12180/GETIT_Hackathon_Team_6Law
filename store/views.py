@@ -1,10 +1,12 @@
+import random
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import get_object_or_404
-from .models import Store, Review, Check_table
+from .models import Store, Review
 from .forms import ReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 
 # Create your views here.
 '''
@@ -49,7 +51,12 @@ class StoreDetail(DetailView) :
         table = 0
         for seat in seats :
             table = seat.table
+        random_nums = random.sample(range(table), int(table / 3))
         table_list = [[i, False] for i in range(table)]
+        for num in random_nums :
+            table_list[num][1] = True
+        context['using_table'] = int(table / 3)
+        context['table_num'] = table
         context['table_list'] = table_list
 
         return context
@@ -68,10 +75,6 @@ class StoreCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView) :
             form.instance.author = current_user
             response = super(StoreCreate, self).form_valid(form)
 
-            created_store = Store.objects.get(title=form.instance.title)
-            check_table = Check_table.objects.create(store=created_store, table_num=form.instance.table)
-            check_table.save()
-            
             return response
         else :
             return redirect('/store/')
@@ -113,6 +116,17 @@ def new_Review(request, pk) :
     else :
         raise PermissionDenied
 
-def change_table_status(request, pk) :
-    if request.user.is_authenticated :
-        store = get_object_or_404(Store, pk=pk)
+class StoreSearch(StoreList) :
+    paginate_by : None
+
+    def get_queryset(self) :
+        q = self.kwargs['q']
+        store_list = Store.objects.filter (Q(title__contains = q)).distinct()
+        return store_list
+    
+    def get_context_data(self, **kwargs):
+        context = super(StoreSearch, self).get_context_data()
+        q = self.kwargs['q']
+        context['search_info'] = f' 검색 결과 : {q} ({self.get_queryset().count()})'
+
+        return context
