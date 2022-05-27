@@ -1,5 +1,12 @@
-{% extends 'main/base.html' %}
-
+{% extends 'main/base_full_width.html' %}
+{% load static %}
 {% block main_area %}
-    <h1>Main Page</h1>
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <img src="{% static 'main/img/main_image_width.png' %}" class="img-fluid" alt="Responsive image">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+    </div>
 {% endblock %}
