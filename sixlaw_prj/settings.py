@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'annoying',
 ]
 
+AUTH_USER_MODEL = 'account_page.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -152,5 +154,4 @@ SITE_ID = 1
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-LOGIN_REDIRECT_URL = '/blog/'
-AUTH_USER_MODEL = 'account.User'
+LOGIN_REDIRECT_URL = '/store/'

@@ -67,11 +67,11 @@ class StoreCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView) :
     template_name = 'store/store_create.html'
 
     def test_func(self) :
-        return self.request.user.is_superuser or self.request.user.is_staff
+        return self.request.user.is_seller or self.request.user.is_staff
 
     def form_valid(self, form) :
         current_user = self.request.user
-        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser) :
+        if current_user.is_authenticated and (current_user.is_staff or current_user.is_seller) :
             form.instance.author = current_user
             response = super(StoreCreate, self).form_valid(form)
 

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
@@ -10,6 +10,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
         주소
         리뷰
 '''
+User = settings.AUTH_USER_MODEL
 
 class Store(models.Model) : 
     title = models.CharField(max_length=30, unique=True)

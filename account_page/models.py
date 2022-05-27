@@ -3,28 +3,33 @@ from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
 #AbstractBaseUser을 상속받아 생성
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, date_of_birth, password=None):
+    def create_user(self, nickname, email, date_of_birth, is_seller, password=None):
         if not email:
             raise ValueError('Users must have an email address')
 
         user = self.model(
             email=self.normalize_email(email),
+            nickname=nickname,
             date_of_birth=date_of_birth,
+            is_seller=is_seller,
         )
         #email, date_of_birth, is_active, is_admin 4개의 필드를 가짐
-
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, date_of_birth, password):
+    def create_superuser(self, nickname, email, date_of_birth, is_seller, password):
         user = self.create_user(
-            email,
+            email=email,
+            nickname=nickname,
             password=password,
             date_of_birth=date_of_birth,
+            is_seller=is_seller,
         )
+        user.is_active = True
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -35,17 +40,21 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+    nickname = models.CharField(default='', max_length=10, null=False, blank=False, unique=True)
     date_of_birth = models.DateField()
+
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=True)
+    is_seller = models.BooleanField(default=False)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email' #nickname필드를 email로 사용
-    REQUIRED_FIELDS = ['date_of_birth']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nickname', 'date_of_birth', 'is_seller']
 
     def __str__(self):
-        return self.email
+        return self.nickname
 
     def has_perm(self, perm, obj=None):
         return True
