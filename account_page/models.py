@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
-
+#AbstractBaseUser을 상속받아 생성
 
 class UserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password=None):
@@ -11,6 +11,8 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             date_of_birth=date_of_birth,
         )
+        #email, date_of_birth, is_active, is_admin 4개의 필드를 가짐
+
 
         user.set_password(password)
         user.save(using=self._db)
@@ -39,7 +41,7 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'email' #nickname필드를 email로 사용
     REQUIRED_FIELDS = ['date_of_birth']
 
     def __str__(self):
@@ -50,7 +52,7 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
-
+    #커스텀 유저 모델을 기본 유저 모델로 사용하기 위해 구현
     @property
     def is_staff(self):
         return self.is_admin

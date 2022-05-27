@@ -3,7 +3,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from .models import User
 
-
+#사용자 생성폼
 class UserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(
@@ -19,6 +19,7 @@ class UserCreationForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords don't match")
         return password2
+        #패스워드1과 패스워드2가 일치하는지 검사
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -27,14 +28,14 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
-
+#사용자 수정폼
 class UserChangeForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField()
+    password = ReadOnlyPasswordHashField() #사용자 암호를 화면에 표시
 
     class Meta:
         model = User
         fields = ('email', 'password', 'date_of_birth',
                   'is_active', 'is_admin')
 
-    def clean_password(self):
+    def clean_password(self): #패스워드를 그대로 다시 저장
         return self.initial["password"]
